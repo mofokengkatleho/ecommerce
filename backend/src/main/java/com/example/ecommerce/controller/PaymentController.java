@@ -1,5 +1,4 @@
 package com.example.ecommerce.controller;
-;
 import com.example.ecommerce.PaymentApi;
 import com.example.ecommerce.hateoas.PaymentRepresentationModelAssembler;
 import com.example.ecommerce.model.Authorization;
