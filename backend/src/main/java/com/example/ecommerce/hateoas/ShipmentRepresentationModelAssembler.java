@@ -1,5 +1,6 @@
 package com.example.ecommerce.hateoas;
 
+import com.example.ecommerce.controller.ShipmentController;
 import com.example.ecommerce.entity.ShipmentEntity;
 import com.example.ecommerce.model.Shipment;
 import org.springframework.beans.BeanUtils;

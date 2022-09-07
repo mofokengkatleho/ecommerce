@@ -5,6 +5,7 @@ import com.example.ecommerce.entity.CartEntity;
 import com.example.ecommerce.entity.ItemEntity;
 import com.example.ecommerce.entity.OrderEntity;
 import com.example.ecommerce.entity.OrderItemEntity;
+import com.example.ecommerce.exception.ResourceNotFoundException;
 import com.example.ecommerce.model.NewOrder;
 import com.example.ecommerce.model.Order;
 import org.springframework.stereotype.Repository;
