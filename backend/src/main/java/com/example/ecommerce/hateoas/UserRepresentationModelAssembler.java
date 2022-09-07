@@ -1,5 +1,6 @@
 package com.example.ecommerce.hateoas;
 
+import com.example.ecommerce.controller.CustomerController;
 import com.example.ecommerce.entity.UserEntity;
 import com.example.ecommerce.model.User;
 import org.springframework.beans.BeanUtils;
