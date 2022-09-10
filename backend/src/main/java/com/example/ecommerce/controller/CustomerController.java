@@ -5,6 +5,7 @@ import com.example.ecommerce.CustomerApi;
 import com.example.ecommerce.hateoas.AddressRepresentationModelAssembler;
 import com.example.ecommerce.hateoas.CardRepresentationModelAssembler;
 import com.example.ecommerce.hateoas.UserRepresentationModelAssembler;
+import com.example.ecommerce.model.Address;
 import com.example.ecommerce.model.Card;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.service.UserService;
