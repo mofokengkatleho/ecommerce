@@ -38,10 +38,15 @@ repositories {
 
 dependencies {
 	// DB Starts
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.flywaydb:flyway-core'
-	runtimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	implementation 'com.h2database:h2'
+	runtimeOnly 'io.r2dbc:r2dbc-h2'
 	// DB Ends
+
+	// Flyway: Start
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	// Flyway: End
 
 	// OpenAPI Starts
 	swaggerCodegen 'org.openapitools:openapi-generator-cli:4.3.1'
