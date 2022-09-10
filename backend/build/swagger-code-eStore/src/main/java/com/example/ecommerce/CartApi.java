@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -32,10 +34,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Cart", description = "the Cart API")
 public interface CartApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * POST /api/v1/carts/{customerId}/items : Adds an item in shopping cart
@@ -54,24 +52,7 @@ public interface CartApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<List<Item>> addCartItemsByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item object"  )  @Valid @RequestBody(required = false) Item item) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Item> <id>aeiou</id> <quantity>123</quantity> <unitPrice>3.149</unitPrice> </Item>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Item>>> addCartItemsByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item object"  )  @Valid @RequestBody(required = false) Mono<Item> item, ServerWebExchange exchange);
 
 
     /**
@@ -91,24 +72,7 @@ public interface CartApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.PUT)
-    default ResponseEntity<List<Item>> addOrReplaceItemsByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item object"  )  @Valid @RequestBody(required = false) Item item) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<null> <id>aeiou</id> <quantity>123</quantity> <unitPrice>3.149</unitPrice> </null>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Item>>> addOrReplaceItemsByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item object"  )  @Valid @RequestBody(required = false) Mono<Item> item, ServerWebExchange exchange);
 
 
     /**
@@ -125,10 +89,7 @@ public interface CartApi {
         @ApiResponse(code = 404, message = "Given customer ID doesn't exist") })
     @RequestMapping(value = "/api/v1/carts/{customerId}",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteCart(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Void>> deleteCart(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId, ServerWebExchange exchange);
 
 
     /**
@@ -144,10 +105,7 @@ public interface CartApi {
         @ApiResponse(code = 202, message = "Accepts the request, regardless of whether the specified item exists in the cart or not.") })
     @RequestMapping(value = "/api/v1/carts/{customerId}/items/{itemId}",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteItemFromCart(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item (product) Identifier",required=true) @PathVariable("itemId") String itemId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Void>> deleteItemFromCart(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item (product) Identifier",required=true) @PathVariable("itemId") String itemId, ServerWebExchange exchange);
 
 
     /**
@@ -165,24 +123,7 @@ public interface CartApi {
     @RequestMapping(value = "/api/v1/carts/{customerId}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Cart>> getCartByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"customerId\" : \"customerId\", \"items\" : [ { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }, { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" } ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<null> <customerId>aeiou</customerId> </null>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Cart>>> getCartByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId, ServerWebExchange exchange);
 
 
     /**
@@ -200,24 +141,7 @@ public interface CartApi {
     @RequestMapping(value = "/api/v1/carts/{customerId}/items",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Item>> getCartItemsByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<null> <id>aeiou</id> <quantity>123</quantity> <unitPrice>3.149</unitPrice> </null>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Item>>> getCartItemsByCustomerId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId, ServerWebExchange exchange);
 
 
     /**
@@ -236,23 +160,6 @@ public interface CartApi {
     @RequestMapping(value = "/api/v1/carts/{customerId}/items/{itemId}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Item>> getCartItemsByItemId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item (product) Identifier",required=true) @PathVariable("itemId") String itemId) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Item> <id>aeiou</id> <quantity>123</quantity> <unitPrice>3.149</unitPrice> </Item>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Item>>> getCartItemsByItemId(@ApiParam(value = "Customer Identifier",required=true) @PathVariable("customerId") String customerId,@ApiParam(value = "Item (product) Identifier",required=true) @PathVariable("itemId") String itemId, ServerWebExchange exchange);
 
 }

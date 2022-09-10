@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -31,10 +33,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Product", description = "the Product API")
 public interface ProductApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * GET /api/v1/products/{id} : Returns a product
@@ -49,24 +47,7 @@ public interface ProductApi {
     @RequestMapping(value = "/api/v1/products/{id}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<Product> getProduct(@ApiParam(value = "Product Identifier",required=true) @PathVariable("id") String id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"price\" : 0.8008281904610115, \"imageUrl\" : \"imageUrl\", \"name\" : \"name\", \"count\" : 6, \"description\" : \"description\", \"id\" : \"id\", \"tag\" : [ \"tag\", \"tag\" ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<null> <id>aeiou</id> <name>aeiou</name> <description>aeiou</description> <imageUrl>aeiou</imageUrl> <price>3.149</price> <count>123</count> <tag>aeiou</tag> </null>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Product>> getProduct(@ApiParam(value = "Product Identifier",required=true) @PathVariable("id") String id, ServerWebExchange exchange);
 
 
     /**
@@ -85,23 +66,6 @@ public interface ProductApi {
     @RequestMapping(value = "/api/v1/products",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Product>> queryProducts(@ApiParam(value = "Product tag") @Valid @RequestParam(value = "tag", required = false) String tag,@ApiParam(value = "Product name") @Valid @RequestParam(value = "name", required = false) String name,@ApiParam(value = "Query page number", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Query page size", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"price\" : 0.8008281904610115, \"imageUrl\" : \"imageUrl\", \"name\" : \"name\", \"count\" : 6, \"description\" : \"description\", \"id\" : \"id\", \"tag\" : [ \"tag\", \"tag\" ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<null> <id>aeiou</id> <name>aeiou</name> <description>aeiou</description> <imageUrl>aeiou</imageUrl> <price>3.149</price> <count>123</count> <tag>aeiou</tag> </null>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Product>>> queryProducts(@ApiParam(value = "Product tag") @Valid @RequestParam(value = "tag", required = false) String tag,@ApiParam(value = "Product name") @Valid @RequestParam(value = "name", required = false) String name,@ApiParam(value = "Query page number", defaultValue = "1") @Valid @RequestParam(value = "page", required = false, defaultValue="1") Integer page,@ApiParam(value = "Query page size", defaultValue = "10") @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size, ServerWebExchange exchange);
 
 }
