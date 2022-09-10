@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -32,10 +34,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Order", description = "the Order API")
 public interface OrderApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * POST /api/v1/orders : Creates a new order for the given order request
@@ -53,24 +51,7 @@ public interface OrderApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<List<Order>> addOrder(@ApiParam(value = "New Order Request object"  )  @Valid @RequestBody(required = false) NewOrder newOrder) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"total\" : 1.4658129805029452, \"address\" : { \"residency\" : \"residency\", \"number\" : \"number\", \"country\" : \"country\", \"pincode\" : \"pincode\", \"city\" : \"city\", \"street\" : \"street\", \"state\" : \"state\" }, \"shipment\" : { \"carrier\" : \"carrier\", \"estDeliveryDate\" : \"2000-01-23\", \"orderId\" : \"orderId\", \"trackingNumber\" : \"trackingNumber\" }, \"payment\" : { \"authorized\" : true, \"message\" : \"message\" }, \"id\" : \"id\", \"items\" : [ { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }, { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" } ], \"card\" : { \"expires\" : \"expires\", \"ccv\" : \"ccv\", \"cardNumber\" : \"cardNumber\" }, \"customer\" : { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"password\" : \"password\", \"userStatus\" : 6, \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\", \"username\" : \"username\" }, \"status\" : \"CREATED\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Order> <id>aeiou</id> <date>2000-01-23T04:56:07.000Z</date> <total>3.149</total> <status>aeiou</status> </Order>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Order>>> addOrder(@ApiParam(value = "New Order Request object"  )  @Valid @RequestBody(required = false) Mono<NewOrder> newOrder, ServerWebExchange exchange);
 
 
     /**
@@ -88,24 +69,7 @@ public interface OrderApi {
     @RequestMapping(value = "/api/v1/orders",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Order>> getOrdersByCustomerId(@NotNull @ApiParam(value = "Customer Identifier", required = true) @Valid @RequestParam(value = "customerId", required = true) String customerId) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"total\" : 1.4658129805029452, \"address\" : { \"residency\" : \"residency\", \"number\" : \"number\", \"country\" : \"country\", \"pincode\" : \"pincode\", \"city\" : \"city\", \"street\" : \"street\", \"state\" : \"state\" }, \"shipment\" : { \"carrier\" : \"carrier\", \"estDeliveryDate\" : \"2000-01-23\", \"orderId\" : \"orderId\", \"trackingNumber\" : \"trackingNumber\" }, \"payment\" : { \"authorized\" : true, \"message\" : \"message\" }, \"id\" : \"id\", \"items\" : [ { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }, { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" } ], \"card\" : { \"expires\" : \"expires\", \"ccv\" : \"ccv\", \"cardNumber\" : \"cardNumber\" }, \"customer\" : { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"password\" : \"password\", \"userStatus\" : 6, \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\", \"username\" : \"username\" }, \"status\" : \"CREATED\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Order> <id>aeiou</id> <date>2000-01-23T04:56:07.000Z</date> <total>3.149</total> <status>aeiou</status> </Order>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Order>>> getOrdersByCustomerId(@NotNull @ApiParam(value = "Customer Identifier", required = true) @Valid @RequestParam(value = "customerId", required = true) String customerId, ServerWebExchange exchange);
 
 
     /**
@@ -123,23 +87,6 @@ public interface OrderApi {
     @RequestMapping(value = "/api/v1/orders/{id}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<Order> getOrdersByOrderId(@ApiParam(value = "Order Identifier",required=true) @PathVariable("id") String id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"total\" : 1.4658129805029452, \"address\" : { \"residency\" : \"residency\", \"number\" : \"number\", \"country\" : \"country\", \"pincode\" : \"pincode\", \"city\" : \"city\", \"street\" : \"street\", \"state\" : \"state\" }, \"shipment\" : { \"carrier\" : \"carrier\", \"estDeliveryDate\" : \"2000-01-23\", \"orderId\" : \"orderId\", \"trackingNumber\" : \"trackingNumber\" }, \"payment\" : { \"authorized\" : true, \"message\" : \"message\" }, \"id\" : \"id\", \"items\" : [ { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" }, { \"unitPrice\" : 6.027456183070403, \"quantity\" : 0, \"id\" : \"id\" } ], \"card\" : { \"expires\" : \"expires\", \"ccv\" : \"ccv\", \"cardNumber\" : \"cardNumber\" }, \"customer\" : { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"password\" : \"password\", \"userStatus\" : 6, \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\", \"username\" : \"username\" }, \"status\" : \"CREATED\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Order> <id>aeiou</id> <date>2000-01-23T04:56:07.000Z</date> <total>3.149</total> <status>aeiou</status> </Order>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Order>> getOrdersByOrderId(@ApiParam(value = "Order Identifier",required=true) @PathVariable("id") String id, ServerWebExchange exchange);
 
 }

@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -32,10 +34,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Payment", description = "the Payment API")
 public interface PaymentApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * POST /api/v1/payments : Authorize a payment request
@@ -51,24 +49,7 @@ public interface PaymentApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Authorization> authorize(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) PaymentReq paymentReq) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"orderId\" : \"orderId\", \"authorized\" : true, \"time\" : \"2000-01-23T04:56:07.000+00:00\", \"message\" : \"message\", \"error\" : \"error\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Authorization> <orderId>aeiou</orderId> <time>2000-01-23T04:56:07.000Z</time> <authorized>true</authorized> <message>aeiou</message> <error>aeiou</error> </Authorization>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Authorization>> authorize(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Mono<PaymentReq> paymentReq, ServerWebExchange exchange);
 
 
     /**
@@ -84,23 +65,6 @@ public interface PaymentApi {
     @RequestMapping(value = "/api/v1/payments",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Authorization>> getOrdersPaymentAuthorization(@NotNull @ApiParam(value = "Order Identifier", required = true) @Valid @RequestParam(value = "id", required = true) String id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"orderId\" : \"orderId\", \"authorized\" : true, \"time\" : \"2000-01-23T04:56:07.000+00:00\", \"message\" : \"message\", \"error\" : \"error\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Authorization> <orderId>aeiou</orderId> <time>2000-01-23T04:56:07.000Z</time> <authorized>true</authorized> <message>aeiou</message> <error>aeiou</error> </Authorization>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Authorization>>> getOrdersPaymentAuthorization(@NotNull @ApiParam(value = "Order Identifier", required = true) @Valid @RequestParam(value = "id", required = true) String id, ServerWebExchange exchange);
 
 }

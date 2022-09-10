@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -32,10 +34,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Card", description = "the Card API")
 public interface CardApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * DELETE /api/v1/cards/{id} : Deletes card&#39;s address
@@ -49,10 +47,7 @@ public interface CardApi {
         @ApiResponse(code = 202, message = "Accepts the deletion request and perform deletion. If ID does not exist, does nothing.") })
     @RequestMapping(value = "/api/v1/cards/{id}",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteCardById(@ApiParam(value = "card Identifier",required=true) @PathVariable("id") String id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Void>> deleteCardById(@ApiParam(value = "card Identifier",required=true) @PathVariable("id") String id, ServerWebExchange exchange);
 
 
     /**
@@ -67,24 +62,7 @@ public interface CardApi {
     @RequestMapping(value = "/api/v1/cards",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Card>> getAllCards() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"expires\" : \"expires\", \"ccv\" : \"ccv\", \"cardNumber\" : \"cardNumber\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Card> <cardNumber>aeiou</cardNumber> <expires>aeiou</expires> <ccv>aeiou</ccv> </Card>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Card>>> getAllCards(ServerWebExchange exchange);
 
 
     /**
@@ -100,24 +78,7 @@ public interface CardApi {
     @RequestMapping(value = "/api/v1/cards/{id}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<Card> getCardById(@ApiParam(value = "card Identifier",required=true) @PathVariable("id") String id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"expires\" : \"expires\", \"ccv\" : \"ccv\", \"cardNumber\" : \"cardNumber\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Card> <cardNumber>aeiou</cardNumber> <expires>aeiou</expires> <ccv>aeiou</ccv> </Card>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Card>> getCardById(@ApiParam(value = "card Identifier",required=true) @PathVariable("id") String id, ServerWebExchange exchange);
 
 
     /**
@@ -134,23 +95,6 @@ public interface CardApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Card> registerCard(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) AddCardReq addCardReq) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"expires\" : \"expires\", \"ccv\" : \"ccv\", \"cardNumber\" : \"cardNumber\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Card> <cardNumber>aeiou</cardNumber> <expires>aeiou</expires> <ccv>aeiou</ccv> </Card>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Card>> registerCard(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Mono<AddCardReq> addCardReq, ServerWebExchange exchange);
 
 }

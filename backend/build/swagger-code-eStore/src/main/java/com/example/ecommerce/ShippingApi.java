@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -33,10 +35,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Shipping", description = "the Shipping API")
 public interface ShippingApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * GET /api/v1/shipping : Return the Shipment
@@ -51,24 +49,7 @@ public interface ShippingApi {
     @RequestMapping(value = "/api/v1/shipping",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Shipment>> getShipmentByOrderId(@NotNull @ApiParam(value = "Order Identifier", required = true) @Valid @RequestParam(value = "id", required = true) String id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"carrier\" : \"carrier\", \"estDeliveryDate\" : \"2000-01-23\", \"orderId\" : \"orderId\", \"trackingNumber\" : \"trackingNumber\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Shipment> <orderId>aeiou</orderId> <carrier>aeiou</carrier> <trackingNumber>aeiou</trackingNumber> <estDeliveryDate>2000-01-23</estDeliveryDate> </Shipment>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Shipment>>> getShipmentByOrderId(@NotNull @ApiParam(value = "Order Identifier", required = true) @Valid @RequestParam(value = "id", required = true) String id, ServerWebExchange exchange);
 
 
     /**
@@ -85,23 +66,6 @@ public interface ShippingApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Authorization> shipOrder(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) ShippingReq shippingReq) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"orderId\" : \"orderId\", \"authorized\" : true, \"time\" : \"2000-01-23T04:56:07.000+00:00\", \"message\" : \"message\", \"error\" : \"error\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Authorization> <orderId>aeiou</orderId> <time>2000-01-23T04:56:07.000Z</time> <authorized>true</authorized> <message>aeiou</message> <error>aeiou</error> </Authorization>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Authorization>> shipOrder(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Mono<ShippingReq> shippingReq, ServerWebExchange exchange);
 
 }

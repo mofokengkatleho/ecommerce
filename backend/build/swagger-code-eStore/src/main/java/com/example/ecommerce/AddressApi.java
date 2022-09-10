@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -32,10 +34,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Address", description = "the Address API")
 public interface AddressApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * POST /api/v1/addresses : Creates a new user addresses
@@ -51,24 +49,7 @@ public interface AddressApi {
         produces = { "application/xml", "application/json" }, 
         consumes = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Address> createAddress(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) AddAddressReq addAddressReq) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"residency\" : \"residency\", \"number\" : \"number\", \"country\" : \"country\", \"pincode\" : \"pincode\", \"city\" : \"city\", \"street\" : \"street\", \"state\" : \"state\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Address> <number>aeiou</number> <residency>aeiou</residency> <street>aeiou</street> <city>aeiou</city> <state>aeiou</state> <country>aeiou</country> <pincode>aeiou</pincode> </Address>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Address>> createAddress(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Mono<AddAddressReq> addAddressReq, ServerWebExchange exchange);
 
 
     /**
@@ -83,10 +64,7 @@ public interface AddressApi {
         @ApiResponse(code = 202, message = "Accepts the deletion request and perform deletion. If ID does not exist, does nothing.") })
     @RequestMapping(value = "/api/v1/addresses/{id}",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteAddressesById(@ApiParam(value = "address Identifier",required=true) @PathVariable("id") String id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Void>> deleteAddressesById(@ApiParam(value = "address Identifier",required=true) @PathVariable("id") String id, ServerWebExchange exchange);
 
 
     /**
@@ -102,24 +80,7 @@ public interface AddressApi {
     @RequestMapping(value = "/api/v1/addresses/{id}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<Address> getAddressesById(@ApiParam(value = "address Identifier",required=true) @PathVariable("id") String id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"residency\" : \"residency\", \"number\" : \"number\", \"country\" : \"country\", \"pincode\" : \"pincode\", \"city\" : \"city\", \"street\" : \"street\", \"state\" : \"state\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Address> <number>aeiou</number> <residency>aeiou</residency> <street>aeiou</street> <city>aeiou</city> <state>aeiou</state> <country>aeiou</country> <pincode>aeiou</pincode> </Address>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Address>> getAddressesById(@ApiParam(value = "address Identifier",required=true) @PathVariable("id") String id, ServerWebExchange exchange);
 
 
     /**
@@ -134,23 +95,6 @@ public interface AddressApi {
     @RequestMapping(value = "/api/v1/addresses",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<Address>> getAllAddresses() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"residency\" : \"residency\", \"number\" : \"number\", \"country\" : \"country\", \"pincode\" : \"pincode\", \"city\" : \"city\", \"street\" : \"street\", \"state\" : \"state\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/xml"))) {
-                    String exampleString = "<Address> <number>aeiou</number> <residency>aeiou</residency> <street>aeiou</street> <city>aeiou</city> <state>aeiou</state> <country>aeiou</country> <pincode>aeiou</pincode> </Address>";
-                    ApiUtil.setExampleResponse(request, "application/xml", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    Mono<ResponseEntity<Flux<Address>>> getAllAddresses(ServerWebExchange exchange);
 
 }
