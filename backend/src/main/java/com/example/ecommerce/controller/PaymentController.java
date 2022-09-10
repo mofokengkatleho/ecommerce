@@ -4,6 +4,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.PaymentApi;
 import com.example.ecommerce.hateoas.PaymentRepresentationModelAssembler;
 import com.example.ecommerce.model.Authorization;
+import com.example.ecommerce.model.PaymentReq;
 import com.example.ecommerce.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
