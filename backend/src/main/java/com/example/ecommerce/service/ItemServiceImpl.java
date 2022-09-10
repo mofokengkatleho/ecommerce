@@ -1,8 +1,9 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.ItemEntity;
-import com.packt.modern.api.entity.ProductEntity;
-import com.packt.modern.api.model.Item;
+
+import com.example.ecommerce.entity.ItemEntity;
+import com.example.ecommerce.entity.ProductEntity;
+import com.example.ecommerce.model.Item;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -12,10 +13,6 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
 @Service
 public class ItemServiceImpl implements ItemService {
 

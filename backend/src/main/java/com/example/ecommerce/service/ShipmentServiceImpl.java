@@ -1,17 +1,15 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.ShipmentEntity;
-import com.packt.modern.api.repository.ShipmentRepository;
+import com.example.ecommerce.entity.ShipmentEntity;
+import com.example.ecommerce.repository.ShipmentRepository;
+
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 @Service
 public class ShipmentServiceImpl implements ShipmentService {
 

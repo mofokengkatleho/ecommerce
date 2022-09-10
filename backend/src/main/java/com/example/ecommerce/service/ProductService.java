@@ -1,16 +1,13 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.ProductEntity;
+import com.example.ecommerce.entity.ProductEntity;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 @Validated
 public interface ProductService {
   @NotNull Iterable<ProductEntity> getAllProducts();

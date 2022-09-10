@@ -1,9 +1,7 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.OrderEntity;
-import com.packt.modern.api.exception.ResourceNotFoundException;
-import com.packt.modern.api.model.NewOrder;
-import com.packt.modern.api.repository.OrderRepository;
+import com.example.ecommerce.entity.OrderEntity;
+import com.example.ecommerce.exception.ResourceNotFoundException;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 @Service
 public class OrderServiceImpl implements OrderService {
 

@@ -1,17 +1,15 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.ProductEntity;
-import com.packt.modern.api.repository.ProductRepository;
+
+import com.example.ecommerce.entity.ProductEntity;
+import com.example.ecommerce.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {

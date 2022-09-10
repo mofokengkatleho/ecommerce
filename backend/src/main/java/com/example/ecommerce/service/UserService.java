@@ -1,15 +1,13 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.AddressEntity;
-import com.packt.modern.api.entity.CardEntity;
-import com.packt.modern.api.entity.UserEntity;
+
+import com.example.ecommerce.entity.AddressEntity;
+import com.example.ecommerce.entity.CardEntity;
+import com.example.ecommerce.entity.UserEntity;
 
 import java.util.Optional;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 public interface UserService {
   public void deleteCustomerById(String id);
   public Optional<Iterable<AddressEntity>> getAddressesByCustomerId(String id);

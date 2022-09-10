@@ -1,14 +1,11 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.ItemEntity;
-import com.packt.modern.api.model.Item;
+import com.example.ecommerce.entity.ItemEntity;
+import com.example.ecommerce.model.Item;
 
 import java.util.List;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 public interface ItemService {
 
   ItemEntity toEntity(Item m);

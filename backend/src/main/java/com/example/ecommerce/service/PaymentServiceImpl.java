@@ -1,9 +1,10 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.AuthorizationEntity;
-import com.packt.modern.api.model.PaymentReq;
-import com.packt.modern.api.repository.OrderRepository;
-import com.packt.modern.api.repository.PaymentRepository;
+
+import com.example.ecommerce.entity.AuthorizationEntity;
+import com.example.ecommerce.model.PaymentReq;
+import com.example.ecommerce.repository.OrderRepository;
+import com.example.ecommerce.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -11,10 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
