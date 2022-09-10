@@ -8,7 +8,9 @@ import com.example.ecommerce.entity.OrderItemEntity;
 import com.example.ecommerce.exception.ResourceNotFoundException;
 import com.example.ecommerce.model.NewOrder;
 import com.example.ecommerce.model.Order;
+import com.example.ecommerce.service.ItemService;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -1,12 +1,14 @@
 package com.example.ecommerce.repository;
 
-
 import com.example.ecommerce.entity.OrderEntity;
 import com.example.ecommerce.model.NewOrder;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
 
 public interface OrderRepositoryExt {
-  Optional<OrderEntity> insert(NewOrder m);
+
+  Mono<OrderEntity> insert(Mono<NewOrder> m);
+
+  Mono<OrderEntity> updateMapping(OrderEntity orderEntity);
 }
 

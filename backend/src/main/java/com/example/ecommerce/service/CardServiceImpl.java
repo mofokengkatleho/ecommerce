@@ -1,20 +1,21 @@
 package com.example.ecommerce.service;
 
-
 import com.example.ecommerce.entity.CardEntity;
-import com.example.ecommerce.entity.UserEntity;
 import com.example.ecommerce.model.AddCardReq;
 import com.example.ecommerce.repository.CardRepository;
 import com.example.ecommerce.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.UUID;
 
 
 @Service
 public class CardServiceImpl implements CardService {
+
   private CardRepository repository;
   private UserRepository userRepo;
 
@@ -24,32 +25,37 @@ public class CardServiceImpl implements CardService {
   }
 
   @Override
-  public void deleteCardById(String id) {
-    repository.deleteById(UUID.fromString(id));
+  public Mono<Void> deleteCardById(String id) {
+    return deleteCardById(UUID.fromString(id));
   }
 
   @Override
-  public Iterable<CardEntity> getAllCards() {
+  public Mono<Void> deleteCardById(UUID id) {
+    return repository.deleteById(id);
+  }
+
+  @Override
+  public Flux<CardEntity> getAllCards() {
     return repository.findAll();
   }
 
   @Override
-  public Optional<CardEntity> getCardById(String id) {
+  public Mono<CardEntity> getCardById(String id) {
     return repository.findById(UUID.fromString(id));
   }
 
   @Override
-  public Optional<CardEntity> registerCard(@Valid AddCardReq addCardReq) {
-    // add validation to make sure that only single card exists from one user
-    // else it throw DataIntegrityViolationException for user_id (unique)
-    return Optional.of(repository.save(toEntity(addCardReq)));
+  public Mono<CardEntity> registerCard(@Valid Mono<AddCardReq> addCardReq) {
+    return addCardReq.map(this::toEntity).flatMap(repository::save);
   }
 
-  private CardEntity toEntity(AddCardReq m) {
+  @Override
+  public CardEntity toEntity(AddCardReq model) {
     CardEntity e = new CardEntity();
-    Optional<UserEntity> user = userRepo.findById(UUID.fromString(m.getUserId()));
-    user.ifPresent(u -> e.setUser(u));
-    return e.setNumber(m.getCardNumber()).setCvv(m.getCvv())
-        .setExpires(m.getExpires());
+    BeanUtils.copyProperties(model, e);
+    e.setNumber(model.getCardNumber());
+    //Mono<UserEntity> user = userRepo.findById(UUID.fromString(model.getUserId()));
+    //user.map(u -> e.setUser(u));
+    return e;
   }
 }
