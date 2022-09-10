@@ -1,24 +1,26 @@
 package com.example.ecommerce.entity;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.util.UUID;
 
-@Entity
-@Table(name = "payment")
+
+@Table("ecomm.payment")
 public class PaymentEntity {
 
   @Id
-  @GeneratedValue
-  @Column(name = "ID", updatable = false, nullable = false)
+  @Column("id")
   private UUID id;
 
-  @Column(name="AUTHORIZED")
+  @Column("authorized")
   private boolean authorized;
 
-  @Column(name = "MESSAGE")
+  @Column("message")
   private String message;
 
-  @OneToOne(mappedBy = "paymentEntity")
+  // @OneToOne(mappedBy = "paymentEntity")
   private OrderEntity orderEntity;
 
   public UUID getId() {

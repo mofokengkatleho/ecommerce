@@ -1,11 +1,11 @@
 package com.example.ecommerce.controller;
 
+
 import com.example.ecommerce.CartApi;
 import com.example.ecommerce.hateoas.CartRepresentationModelAssembler;
+import com.example.ecommerce.model.Cart;
+import com.example.ecommerce.model.Item;
 import com.example.ecommerce.service.CartService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
@@ -13,8 +13,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.status;
 
@@ -33,7 +35,7 @@ public class CartsController implements CartApi {
 
   @Override
   public Mono<ResponseEntity<Flux<Item>>> addCartItemsByCustomerId(String customerId,
-      @Valid Mono<Item> item, ServerWebExchange exchange) {
+                                                                   @Valid Mono<Item> item, ServerWebExchange exchange) {
     return service.getCartByCustomerId(customerId)
         .map(
             a -> status(HttpStatus.CREATED).body(service.addCartItemsByCustomerId(a, item.cache())))
@@ -68,7 +70,7 @@ public class CartsController implements CartApi {
 
   @Override
   public Mono<ResponseEntity<Cart>> getCartByCustomerId(String customerId,
-      ServerWebExchange exchange) {
+                                                        ServerWebExchange exchange) {
     return service.getCartByCustomerId(customerId).map(c -> assembler.entityToModel(c, exchange))
         .map(ResponseEntity::ok).defaultIfEmpty(notFound().build());
   }

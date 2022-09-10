@@ -2,24 +2,21 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.entity.CartEntity;
 import com.example.ecommerce.model.Item;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 public interface CartService {
 
-  public List<Item> addCartItemsByCustomerId(String customerId, @Valid Item item);
+  Flux<Item> addCartItemsByCustomerId(CartEntity cartEntity, @Valid Mono<Item> item);
 
-  public List<Item> addOrReplaceItemsByCustomerId(String customerId, @Valid Item item);
+  Flux<Item> addOrReplaceItemsByCustomerId(CartEntity cartEntity, @Valid Mono<Item> newItem);
 
-  public void deleteCart(String customerId);
+  Mono<Void> deleteCart(String customerId, String cartId);
 
-  public void deleteItemFromCart(String customerId, String itemId);
+  Mono<Void> deleteItemFromCart(CartEntity cartEntity, String itemId);
 
-  public CartEntity getCartByCustomerId(String customerId);
-
-  public List<Item> getCartItemsByCustomerId(String customerId);
-
-  public Item getCartItemsByItemId(String customerId, String itemId);
+  Mono<CartEntity> getCartByCustomerId(String customerId);
 }

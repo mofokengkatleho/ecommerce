@@ -1,35 +1,36 @@
 package com.example.ecommerce.entity;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table(name = "item")
+
+@Table("ecomm.item")
 public class ItemEntity {
 
   @Id
-  @GeneratedValue
-  @Column(name = "ID", updatable = false, nullable = false)
+  @Column("id")
   private UUID id;
 
-  @ManyToOne
-  @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID")
-  private ProductEntity product;
+  @Column("product_id")
+  private UUID productId;
+  /*@OneToOne
+  @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID")*/
+  //private ProductEntity product;
 
-  @Column(name = "UNIT_PRICE")
+  @Column("unit_price")
   private BigDecimal price;
 
-  @Column(name = "QUANTITY")
+  @Column("quantity")
   private int quantity;
 
-  @ManyToMany(mappedBy = "items", fetch = FetchType.LAZY)
-  private List<CartEntity> cart;
-
-  @ManyToMany(mappedBy = "items", fetch = FetchType.LAZY)
-  private List<OrderEntity> orders;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
+//  private CartEntity cart;
 
   public UUID getId() {
     return id;
@@ -40,14 +41,14 @@ public class ItemEntity {
     return this;
   }
 
-  public ProductEntity getProduct() {
+  /*public ProductEntity getProduct() {
     return product;
   }
 
   public ItemEntity setProduct(ProductEntity product) {
     this.product = product;
     return this;
-  }
+  }*/
 
   public BigDecimal getPrice() {
     return price;
@@ -76,6 +77,15 @@ public class ItemEntity {
     return this;
   }*/
 
+  public UUID getProductId() {
+    return productId;
+  }
+
+  public ItemEntity setProductId(UUID productId) {
+    this.productId = productId;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -85,30 +95,12 @@ public class ItemEntity {
       return false;
     }
     ItemEntity that = (ItemEntity) o;
-    return quantity == that.quantity && product.equals(that.product) && Objects
-        .equals(price, that.price);// && Objects.equals(cart, that.cart);
+    return quantity == that.quantity && productId.equals(that.productId)
+        && Objects.equals(price, that.price);// && Objects.equals(cart, that.cart);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(product, price, quantity);//, cart);
-  }
-
-  public List<CartEntity> getCart() {
-    return cart;
-  }
-
-  public ItemEntity setCart(List<CartEntity> cart) {
-    this.cart = cart;
-    return this;
-  }
-
-  public List<OrderEntity> getOrders() {
-    return orders;
-  }
-
-  public ItemEntity setOrders(List<OrderEntity> orders) {
-    this.orders = orders;
-    return this;
+    return Objects.hash(productId, price, quantity);//product, cart);
   }
 }

@@ -1,19 +1,22 @@
 package com.example.ecommerce.service;
 
-import com.packt.modern.api.entity.OrderEntity;
-import com.packt.modern.api.model.NewOrder;
+
+import com.example.ecommerce.entity.OrderEntity;
+import com.example.ecommerce.model.NewOrder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Optional;
 
-/**
- * @author : github.com/sharmasourabh
- * @project : Chapter04 - Modern API Development with Spring and Spring Boot
- **/
+
 public interface OrderService {
 
-  public Optional<OrderEntity> addOrder(@Valid NewOrder newOrder);
-  public Iterable<OrderEntity> getOrdersByCustomerId(@NotNull @Valid String customerId);
-  public Optional<OrderEntity> getByOrderId(String id);
+  Mono<OrderEntity> addOrder(@Valid Mono<NewOrder> newOrder);
+
+  Mono<OrderEntity> updateMapping(@Valid OrderEntity orderEntity);
+
+  Flux<OrderEntity> getOrdersByCustomerId(@NotNull @Valid String customerId);
+
+  Mono<OrderEntity> getByOrderId(String id);
 }

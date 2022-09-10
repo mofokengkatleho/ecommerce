@@ -1,21 +1,24 @@
 package com.example.ecommerce.entity;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Entity
-@Table(name = "tag")
+
+
+@Table("ecomm.tag")
 public class TagEntity {
 
   @Id
-  @GeneratedValue
-  @Column(name = "ID", updatable = false, nullable = false)
+  @Column("id")
   private UUID id;
 
   @NotNull(message = "Product name is required.")
-  @Basic(optional = false)
-  @Column(name = "NAME")
+//  @Basic(optional = false)
+  @Column("name")
   private String name;
 
   public UUID getId() {
