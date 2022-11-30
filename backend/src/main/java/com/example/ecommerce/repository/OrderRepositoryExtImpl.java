@@ -140,8 +140,8 @@ class OrderMapper implements BiFunction<Row, Object, OrderEntity> {
 
   @Override
   public OrderEntity apply(Row row, Object o) {
-    OrderEntity oe = new OrderEntity();
-    return oe.setId(row.get("id", UUID.class))
+    OrderEntity orderEntity = new OrderEntity();
+    return orderEntity.setId(row.get("id", UUID.class))
         .setCustomerId(row.get("customer_id", UUID.class))
         .setAddressId(row.get("address_id", UUID.class))
         .setCardId(row.get("card_id", UUID.class))

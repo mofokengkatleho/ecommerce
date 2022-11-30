@@ -75,7 +75,7 @@ public class Order extends RepresentationModel<Order>  implements Serializable {
   /**
    * Order Status
    */
-  public enum StatusEnum {
+  public enum StatusEnum
     CREATED("CREATED"),
     
     PAID("PAID"),

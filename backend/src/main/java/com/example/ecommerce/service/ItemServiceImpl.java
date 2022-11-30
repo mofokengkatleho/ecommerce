@@ -28,17 +28,17 @@ public class ItemServiceImpl implements ItemService {
     );
   }
 
-  /*@Override
+  @Override
   public Mono<Item> toModel(Mono<ItemEntity> entity) {
     return entity.map(e -> new Item().id(e.getProduct().getId().toString()).unitPrice(e.getPrice()).quantity(e.getQuantity()));
   }
 
-  @Override
-  public Mono<Item> toModel(ItemEntity e) {
-    Item m = new Item();
-    m.id(e.getProduct().getId().toString()).unitPrice(e.getPrice()).quantity(e.getQuantity());
-    return Mono.just(m);
-  }*/
+//  @Override
+//  public Mono<Item> toModel(ItemEntity e) {
+//    Item m = new Item();
+//    m.id(e.getProduct().getId().toString()).unitPrice(e.getPrice()).quantity(e.getQuantity());
+//    return Mono.just(m);
+//  }
 
   @Override
   public Mono<List<Item>> fluxTolList(Flux<ItemEntity> items) {

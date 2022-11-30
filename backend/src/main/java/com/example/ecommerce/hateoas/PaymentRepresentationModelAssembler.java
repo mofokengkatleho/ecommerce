@@ -60,3 +60,8 @@ public class PaymentRepresentationModelAssembler extends
   }
 
 }
+
+
+
+
+semitone-difference-basic-algorithm-javascript-1/src/semitone-gui.js' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, isolated-app, chrome-extension, chrome, https, chrome-untrusted. Access to script at 'file:///home/sinenhlanhla/Katleho-Mofokeng-199-semitone-difference-basic-algorithm-javascript-1/src/semitone-gui.js' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, isolated-app, chrome-extension, chrome, https, chrome-untrusted. cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
